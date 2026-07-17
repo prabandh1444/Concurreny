@@ -1,17 +1,9 @@
 #include <spin_mutex.h>
+#include <common.h>
 
 void SpinMutex::lock()
 {
-    __asm__ __volatile__(
-    "start:\n\t"
-    "movb $1, %%al\n\t"
-    "xchgb %%al, %0\n\t"
-    "cmpb $0, %%al\n\t"
-    "jne start\n\t"
-    : "+m"(flag_)
-    :
-    : "%al", "memory"
-    );
+    while(xchg((unsigned char*)&flag_, 1)!=0) ;
 }
 
 void SpinMutex::unlock()
@@ -21,12 +13,5 @@ void SpinMutex::unlock()
 
 void SpinMutex::try_lock()
 {
-    __asm__ __volatile__(
-    "movb $1, %%al\n\t"
-    "xchgb %%al, %0\n\t"
-    "ret"
-    : "+m"(flag_)
-    :
-    : "%al", "memory"
-    );
+    xchg((unsigned char*)&flag_, 1);
 }

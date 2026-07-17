@@ -2,9 +2,9 @@
 #include <vector>
 #include <cassert>
 
-#include <spin_mutex.h>
+#include <sleep_mutex.h>
 
-SpinMutex m;
+SleepMutex m;
 size_t counter = 0;
 size_t NUM_THREADS = 20;
 
